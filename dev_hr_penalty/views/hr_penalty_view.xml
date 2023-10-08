@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2015 DevIntelle Consulting Service Pvt.Ltd (<http://www.devintellecs.com>).
+
+For Module Support : devintelle@gmail.com  or Skype : devintelle
+ -->
+<odoo>
+    <record id="view_penalty_tree" model="ir.ui.view">
+        <field name="name">view.penalty.tree</field>
+        <field name="model">hr.penalty</field>
+        <field name="arch" type="xml">
+            <tree string="Hr Penalty Tree">
+                <field name="name" string="Penalty Summary"/>
+
+            </tree>
+        </field>
+    </record>
+    <record id="view_penalty_form" model="ir.ui.view">
+        <field name="name">view.penalty.form</field>
+        <field name="model">hr.penalty</field>
+        <field name="arch" type="xml">
+            <form string="Hr Penalty ">
+                <header>
+                    <button name="do_confirm" string="Confirm" states="tentative" type="object" class="oe_highlight"/>
+                    <button name="mail_send" states="confirmed" string="Send mail To Employee" type="object" class="oe_highlight"/>
+                    <button name="do_done" states="mail_sent" string="Validate" type="object" class="oe_highlight"/>
+                    <button name="do_cancel" string="Cancel" states="confirmed" type="object"/>
+                    <button name="set_to_draft" string="Set to Draft" states="cancelled" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="tentative,confirmed,mail_sent,done,cancel"/>
+                </header>
+                <sheet>
+
+                    <group col="4">
+                        <field name="name" string="Penalty Summary" colspan="4" required="1" attrs="{'readonly': [('state','in',['done', 'confirmed'])]}"/>
+                        <newline/>
+                        <field name="declaration_date" required="1" attrs="{'readonly': [('state','in',['done', 'confirmed'])]}"/>
+                        <field name="applied_date" attrs="{'readonly': [('state','in',['done', 'confirmed'])]}"/>
+                    </group>
+                    <group string="Employee Details" col="4">
+                        <field name="employee_id" attrs="{'readonly': [('state','in',['done', 'confirmed'])]}"/>
+                        <field name="job_id" attrs="{'readonly': [('state','in',['done', 'confirmed'])]}"/>
+                        <field name="department_id" attrs="{'readonly': [('state','in',['done', 'confirmed'])]}"/>
+                        <field name="company_id"/>
+
+                    </group>
+
+                    <group col="4" colspan="4">
+                        <group col="2">
+                            <field name="penalty_target" attrs="{'readonly': [('state','in',['done', 'confirmed'])]}"/>
+                        </group>
+                        <group col="2">
+                            <field name="amount" attrs="{'invisible': [('penalty_target','!=','amount')] , 'readonly': [('state','in',['done', 'confirmed'])]}"/>
+<!--                            <label for="percentage_amt" attrs="{'invisible': [('penalty_target','!=','per')]}"/>-->
+                            <div attrs="{'invisible': [('penalty_target','!=','per')]}">
+                                <field name="percentage_amt" class="oe_inline" attrs="{'invisible': [('penalty_target','!=','per')],'readonly': [('state','in',['done', 'confirmed'])]}"/>
+                                <label for="percentage_amt" class="oe_internal_label" string="%%" attrs="{'invisible': [('penalty_target','!=','per')]}"/>
+                            </div>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Penalty Detail">
+                            <separator string="Penalty Description"/>
+                            <field name="description" attrs="{'readonly': [('state','in',['done', 'confirmed'])]}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_hr_penalty_form" model="ir.actions.act_window">
+        <field name="name">Hr Penalty</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.penalty</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click To Define A Hr Penalty...
+            </p>
+        </field>
+    </record>
+    <menuitem id="hr_penalty_root" name="Hr Penalty"  parent="hr.menu_hr_root"/>
+    <menuitem id="hr_penalty_sub" name="Penalty" parent="hr_penalty_root" action="action_hr_penalty_form"/>
+
+
+    <record id="hr_penalty__form" model="ir.ui.view">
+        <field name="name">hr.penalty.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+
+                <button type="action" class="oe_stat_button" icon="fa-money" name="%(dev_hr_penalty.action_hr_penalty_form)d" string="Hr Penalty" groups="dev_hr_penalty.hr_penalty_security">
+                </button>
+
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

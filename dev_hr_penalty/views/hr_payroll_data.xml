@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2015 DevIntelle Consulting Service Pvt.Ltd (<http://www.devintellecs.com>).
+
+For Module Support : devintelle@gmail.com  or Skype : devintelle
+ -->
+<odoo>
+
+    <record id="hr_salary_rule_employee_penalty_allowance" model="hr.salary.rule">
+        <field name="name">Employee Penalty Amount</field>
+        <field name="category_id" ref="hr_payroll.DED"/>
+        <field name="code">PENALTY_AMOUNT</field>
+        <field name="sequence" eval="120"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = (inputs.PENALTY_AMOUNT and inputs.PENALTY_AMOUNT.amount > 0)</field>
+        <field name="amount_select">code</field>
+        <field name="struct_id" ref="hr_payroll.structure_002"/>
+        <field name="amount_python_compute">result = -(inputs.PENALTY_AMOUNT and inputs.PENALTY_AMOUNT.amount)</field>
+    </record>
+
+    <record id="hr_salary_rule_employee_penalty_percentage_allowance" model="hr.salary.rule">
+        <field name="name">Employee PENALTY in Percentage</field>
+        <field name="category_id" ref="hr_payroll.DED"/>
+        <field name="code">PENALTY_PERCENTAGE</field>
+        <field name="sequence" eval="121"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = (inputs.PENALTY_PERCENTAGE and inputs.PENALTY_PERCENTAGE.amount > 0)</field>
+        <field name="amount_select">code</field>
+        <field name="struct_id" ref="hr_payroll.structure_002"/>
+        <field name="amount_python_compute">result = -((contract.wage + (categories.HRA or 0.0)) * (inputs.PENALTY_PERCENTAGE and inputs.PENALTY_PERCENTAGE.amount or 0.0) / 100)</field>
+    </record>
+
+    <record id="payslip_input_type_demo_penalty" model="hr.payslip.input.type">
+        <field name="name">HR Penalty By Amount</field>
+        <field name="code">PENALTY_AMOUNT</field>
+    </record>
+
+    <record id="payslip_input_type_demo_penalty2" model="hr.payslip.input.type">
+        <field name="name">HR Penalty By Percentage</field>
+        <field name="code">PENALTY_PERCENTAGE</field>
+    </record>
+
+</odoo>

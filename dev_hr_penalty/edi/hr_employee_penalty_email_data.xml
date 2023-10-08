@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright (C) 2015 DevIntelle Consulting Service Pvt.Ltd (<http://www.devintellecs.com>).
+
+For Module Support : devintelle@gmail.com  or Skype : devintelle
+ -->
+<odoo>
+    <data>
+
+
+        <record id="email_template_edi_employee_penalty" model="mail.template">
+            <field name="name">Employee Penalty Declaration- Send by Email</field>
+            <field name="email_from">{{user.email}}</field>
+            <field name="subject">{{object.name}}</field>
+            <field name="email_to">{{object.employee_id.work_email}}</field>
+            <field name="model_id" ref="dev_hr_penalty.model_hr_penalty"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html"><![CDATA[
+	
+	
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+    <p>Hello <span t-esc="object.employee_id.name"/></p>
+    <br/>
+    <p>The Penalty Declared From: <span t-esc="object.company_id and object.company_id.name or ' '"/> <br/> 
+    	On date:  <span t-esc="object.declaration_date or ' '"/>  <br/>
+    	Will be applied on date: <span t-esc="object.applied_date or ' '"/>  </p>
+    <br/>
+    <p>The Penalty Amount:
+		<t t-if="object.penalty_target == 'amount'">
+			<span t-esc="object.amount or ' '"/> 
+		</t>
+		<t t-if="object.penalty_target == 'per'">
+			<span t-esc="object.percentage_amt or ' '"/> of Salary
+		</t>
+   	</p>
+    <br/>
+    <p> <span t-esc="object.description or ' '"/></p>
+    <br/>
+    <br/>
+    <div style="width: 375px; margin: 0px; padding: 0px; background-color: #8E0000; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; background-repeat: repeat no-repeat;">
+        <h3 style="margin: 0px; padding: 2px 14px; font-size: 12px; color: #DDD;">
+            <strong style="text-transform:uppercase;"><span t-esc="object.company_id and object.company_id.name or ' '"/></strong></h3>
+    </div>
+    <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
+        <span style="color: #222; margin-bottom: 5px; display: block; ">
+		<t t-if="object.company_id">
+			<t t-if="object.company_id.street">
+				<span t-esc="object.company_id.street or ' '"/> <br/>
+	        </t>
+			<t t-if="object.company_id.street2">
+				<span t-esc="object.company_id.street2 or ' '"/><br/>
+	            
+	        </t>
+			<t t-if="object.company_id.city or object.company_id.zip">
+	           <span t-esc="object.company_id.zip or ' '"/>  <span t-esc="object.company_id.city or ' '"/><br/>
+	        </t>
+			<t t-if="object.company_id.country_id">
+				<span t-esc="object.company_id.state_id and object.company_id.state_id.name"/> <span t-esc="object.company_id.country_id.name or '' "/> <br/>
+	             
+	       </t>
+	    </t>
+        </span>
+		<t t-if="object.company_id">
+				<t t-if="object.company_id.phone">
+	            <div style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; ">
+	                Phone:&nbsp; <span t-esc="object.company_id.phone or ' '"/>
+	            </div>
+	        </t>
+			<t t-if="object.company_id.website">
+	            <div>
+	                Web :&nbsp; <a href><span t-esc="object.company_id.website"/></a>    
+	            </div>
+        	</t>
+        </t>
+        <p></p>
+    </div>
+</div>
+			
+
+            ]]></field>
+        </record>
+
+    </data>
+</odoo>
